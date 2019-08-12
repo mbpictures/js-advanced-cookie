@@ -11,13 +11,14 @@ var cookie = (function () {
 	return {
 		/* get cookie with specific name. available options: json=true/false, key=key to read */
 		get: function (name, options = undefined){
-			var cookie = this.getCookie(name);
+			var cookie = getCookie(name);
 			if(options !== undefined) {
 				if(options.json){
 					cookie = JSON.parse(cookie);
 				}
 				if(options.key !== undefined) {
-					cookie = cookie[options.key];
+					var key = cookie.constructor === [].constructor ? parseInt(options.key) : options.key;
+					cookie = cookie[key];
 				}
 			}
 			else{
@@ -42,8 +43,9 @@ var cookie = (function () {
 					string += "; path=" + options.path;
 				}
 			}
-			if(getCookie(name) === undefined || (getCookie(name) !== undefined && options.override !== undefined && options.override === true)){
+			if(getCookie(name) === undefined || (options !== undefined && getCookie(name) !== undefined && options.override !== undefined && options.override === true)){
 				document.cookie = string;
+				console.log(string);
 				return true;
 			}
 			return false;
